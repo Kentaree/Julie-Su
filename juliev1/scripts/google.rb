@@ -68,15 +68,24 @@ def replaceHtmlSymbols (str)
 	str = str.gsub('&amp;', '&')
 
 	# Replace &quot;
-	str = str.gsub ('&quot;', '"')
+	str = str.gsub('&quot;', '"')
 
 	# Replace <em>
 	str = str.gsub('<em>', ''.concat(0x0002))
 	str = str.gsub('</em>', ''.concat(0x000f))
 	str = str.gsub('&#39;', '\'')
 
+	str = str.gsub('<b>', ''.concat(0x0002))
+	str = str.gsub('</b>', ''.concat(0x000f))
+
+	str = str.gsub('&nbsp', ' ')
+
 	return str;
 
+end
+
+def removeLinks (str)
+	str = str.gsub(/<a .*>.*<\/a>/, '')
 end
 
 # TinyURL function
@@ -262,17 +271,28 @@ else # Default parser : use normal google
 
 	body = StringIO.new(res.body)
 
+	fullText = ''
 	while !body.eof
 		curline = body.readline()
-	
+		fullText += curline
+	end
+
+	if fullText != '' then
+		curline = fullText
+
+		while curline.index("\n") != nil
+			curline[curline.index("\n"), "\n".length()] = ''
+		end
+
 		#
 		# Calculator
 		#
 		if curline.index("/images/icons/onebox/calculator-40.gif") != nil then
 			# Calculator call : get the operation/answer
 			curline = curline [curline.index('/images/icons/onebox/calculator-40.gif') + 22 .. curline.length()]
-			curline = curline [curline.index('<b>') + 3 .. curline.length()]
-			equation = curline [0 .. curline.index('</b>') - 1]
+			curline = curline [curline.index('<h2') + 3 .. curline.length()]
+			curline = curline [curline.index('>') + 1 .. curline.length()]
+			equation = curline [0 .. curline.index('</') - 1]
 	
 			# Replace spaces (<font size=-2> </font>) in answer
 			while equation.index('<font size=-2>') != nil
@@ -297,6 +317,11 @@ else # Default parser : use normal google
 				equation[equation.index(160.chr), 1] = ' '
 			end
 
+			# Remove random bols that might be there
+			while equation.index('<b>') != nil
+				equation[equation.index('<b>'), '<b>'.length()] = ''
+			end
+
 			puts "[calc] " + equation + " "
 		end
 	
@@ -305,37 +330,30 @@ else # Default parser : use normal google
 		#
 		if searchterm [0 .. 7] == "weather:" then
 			if curline.index('Weather</b> for') != nil then
-				curline = curline[curline.index('Weather</b> for') .. curline.length()] # Cut till weather
-				curline = curline[curline.index('<b>') + 3 .. curline.length()] # Cut including <b>
-				place = curline[0 .. curline.index('</b>') - 1] # Get place
-				curline = curline[curline.index('<tr>') .. curline.length()] # Cut till <tr>
 
-				s = "rowspan=2>";
-				curline = curline[curline.index(s) + s.length() .. curline.length()] # Cut include string
+				c = curline
+				c = c[c.index('Weather</b> for') .. c.length()]
+				c = c[c.index('<b>') + 3 .. c.length()]
+				place = c[0 .. c.index('</b>') - 1]
 
-				temperature = curline[0 .. curline.index('<td') - 1] # Get temperature
-				curline = curline[curline.index('<td') + 4 .. curline.length()] # Cut off </b>
-				if curline.index('Current') != nil and curline.index('Current') < 50:
-					curline = curline[curline.index('<b>') + 3 .. curline.length()] # Cut including <b>
-					type = curline[0 .. curline.index('</b>') - 1] # Get type
-					curline = curline[curline.index('</b>') + 4 .. curline.length()] # Cut off </b>
-				else
-					type="Unknown"
+				c = c[c.index('<tr>') .. c.length()]
+
+				s = c.index('rowspan=2')
+				if (s == nil) then
+					s = c.index('rowspan="2"')
 				end
-				curline = curline[curline.index('Wind:') .. curline.length()] # Cut to wind
-				wind = curline[0 .. curline.index('<tr>') - 1] # Get wind
-				curline = curline[curline.index('<tr>') + 4 .. curline.length()] # Cut wind and <br>
-				curline = curline[curline.index('Humidity: ') + 'Humidity: '.length() .. curline.length()]
-				humidity = curline[0 .. curline.index('<td') - 1] # Get humidity
-				humidity = 'Humidity: ' + humidity
 
-				# Remove &deg; in temperature
-				# UNNEEDED
-				#temp_type = temperature [temperature.index('&deg;') + 5 .. temperature.length()]
-				#temperature = temperature [0 .. temperature.index('&deg;') - 1]
-				#temperature += temp_type
-				#temperature = temperature[0 .. temperature.index('F') - 2]
-				#temperature += 'F'
+				c = c[s .. c.length()]
+				c = c[c.index('>') + 1 .. c.length()]
+				temperature = c[0 .. c.index(' ')]
+
+				c = c[c.index('Wind:') .. c.length()]		
+				wind = c[0 .. c.index('</td>') - 1]
+
+				c = c[c.index('Humidity: ') + 'Humidity: '.length() .. c.length()]
+				humidity = 'Humidity: ' + c[0 .. c.index('</td') - 1]
+
+				type = 'Unknown'
 
 				# Calculate C for temperature
 				temperature_int = temperature.to_i
@@ -385,26 +403,16 @@ else # Default parser : use normal google
 		elsif searchterm [0 .. 6] == "define:" then
 			# Parse differently
 		
-			if curline.index('Definitions of') != nil then
+			if curline.index('<div class=s>') != nil then
 				
 				# Search for : Definitions of
-				curline = curline[curline.index('Definitions of') .. curline.length()]
-				curline = curline[curline.index('<li>') + 4 .. curline.length()]
+				curline = curline[curline.index('<div class=s>') .. curline.length()]
+				curline = curline[curline.index('<div>') + 5 .. curline.length()]
 	
-				index_li = curline.index('<li>')
-				index_br = curline.index('<br>')
+				definition = curline[0 .. curline.index('</div>') - 1]
 	
-				definition = ""
-				if index_li == nil && index_br != nil then
-					definition = curline [0 .. curline.index('<br>') - 1]	
-				elsif index_br != nil && index_br < index_li then
-					definition = curline[0 .. curline.index('<br>') - 1]
-				elsif index_li != nil then
-					definition = curline[0 .. curline.index('<li>') - 1]
-				else
-					definition = curline[0 .. curline.size()]
-				end
-	
+				definition = removeLinks(definition);
+
 				definition = replaceHtmlSymbols(definition);
 
 				printf "[define] "
@@ -417,8 +425,7 @@ else # Default parser : use normal google
 		# Standard Search
 		#
 		#elsif curline.index('<h3 class=r>') != nil then
-		elsif curline.index('<div id=resultStats>') != nil then
-
+		elsif curline.index('<div id=ires>') != nil or curline.index('<div id="ires">') != nil then
 			# Is this a youtube video/image link?
 			if curline.index('Videos for') != nil and searchingVideos == true then
 				# Video link : diff parsing
@@ -474,7 +481,12 @@ else # Default parser : use normal google
 				curline = curline[curline.index('<div><') .. curline.length()]
 			
 				# Now we chop off till <div
-				curline = curline[curline.index("<li class=g") .. curline.length()]
+				if (curline.index("<li class=g") != nil)
+					curline = curline[curline.index("<li class=g") .. curline.length()]
+				else
+					curline = curline[curline.index("<li class=\"g\"") .. curline.length()]
+				end
+
 				curline = curline[curline.index(">") .. curline.length()]
 
 				curline = curline[curline.index("href") .. curline.length()]
