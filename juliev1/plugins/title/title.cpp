@@ -30,10 +30,13 @@ void Title::run (JulieSu::Irc::Message message)
 	std::string arguments = message.data;
 
 	// Find the link
-	if (arguments.find("http://") == std::string::npos)
+	if (arguments.find("http://") != std::string::npos)
+		arguments = arguments.substr (arguments.find("http://"));
+	else if (arguments.find("https://") != std::string::npos)
+		arguments = arguments.substr (arguments.find("https://"));
+	else
 		return;
 	
-	arguments = arguments.substr (arguments.find("http://"));
 	arguments = arguments.substr (0, arguments.find(" "));
 
 	for (int x=0; x < arguments.size(); x++)
