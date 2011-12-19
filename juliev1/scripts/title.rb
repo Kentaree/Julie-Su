@@ -1,14 +1,13 @@
 #!/usr/bin/env ruby
 
 #
-# google.rb
-# Downloads a google page to get search results
-# Based on SirFire's VB code
+# title.rb
+# Returns the title of a given page
 #
-# Usuage : google.rb <searchterms>
+# Usuage : title.rb <searchterms>
 #
 
-require 'net/http' # HTTP lib
+require 'net/https' # HTTP lib
 require 'uri' # URI lib
 require 'stringio' # Strings
 require 'cgi'
@@ -129,7 +128,14 @@ end
 
 	# Now the fun part, get the webpage with sending POST requests
 	url = URI.parse(urlstr)
-	res = Net::HTTP.get_response(url)
+	http = Net::HTTP.new(url.host, url.port)
+
+	if url.kind_of? URI::HTTPS
+		http.use_ssl = true
+	end
+
+	request = Net::HTTP::Get.new(url.request_uri)
+	res = http.request(request)
 
 	resultCode = res.code
 
