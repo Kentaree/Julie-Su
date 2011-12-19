@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE julie-su_config>
+
+<config>
+	<!-- Julie-Su -->
+	<bot name="Julie-Su" password="">
+	
+		<!-- Plugins to load -->
+		<plugin name="ping"      location="plugins/ping/ping.so"           />
+		<plugin name="haxday"    location="plugins/haxday/haxday.so"       />
+
+		<plugin name="avatar"    location="plugins/avatar/avatar.so"       />
+		<plugin name="userinfo"  location="plugins/userinfo/userinfo.so"   />
+		<plugin name="version"   location="plugins/version/version.so"     />
+
+		<plugin name="action"    location="plugins/action/action.so"       />
+		<plugin name="antispam"  location="plugins/antispam/antispam.so"   />
+		<plugin name="apt"       location="plugins/apt/apt.so"             />
+		<plugin name="bofh"      location="plugins/bofh/bofh.so"           />
+		<plugin name="bug"       location="plugins/bug/bug.so"             />
+		<plugin name="build"     location="plugins/build/build.so"         />
+		<plugin name="devopoly"  location="plugins/devopoly/devopoly.so"   />
+		<plugin name="dice"      location="plugins/dice/dice.so"           />
+		<plugin name="drink"     location="plugins/drink/drink.so"         />
+		<plugin name="echo"      location="plugins/echo/echo.so"           />
+		<plugin name="eightball" location="plugins/eightball/eightball.so" />
+		<plugin name="exec"      location="plugins/exec/exec.so"           />
+		<plugin name="google"    location="plugins/google/google.so"       />
+		<plugin name="help"      location="plugins/help/help.so"           />
+		<plugin name="level"     location="plugins/level/level.so"         />
+		<plugin name="log"       location="plugins/log/log.so"             />
+		<plugin name="map"       location="plugins/map/map.so"             />
+		<plugin name="pastebin"  location="plugins/pastebin/pastebin.so"   />
+		<plugin name="phenny"    location="plugins/phenny/phenny.so"       />
+		<plugin name="pizza"     location="plugins/pizza/pizza.so"         />
+		<plugin name="portage"   location="plugins/portage/portage.so"     />
+		<plugin name="quote"     location="plugins/quote/quote.so"         />
+		<plugin name="raw"       location="plugins/raw/raw.so"             />
+		<plugin name="reload"    location="plugins/reload/reload.so"       />
+		<plugin name="roulette"  location="plugins/roulette/roulette.so"   />
+		<plugin name="spell"     location="plugins/spell/spell.so"         />
+		<plugin name="stats"     location="plugins/stats/stats.so"         />
+		<plugin name="time"      location="plugins/time/time.so"           />
+		<plugin name="title"     location="plugins/title/title.so"         />
+		<plugin name="todo"      location="plugins/todo/todo.so"           />
+		<plugin name="uptime"    location="plugins/uptime/uptime.so"       />
+		<plugin name="vote"      location="plugins/vote/vote.so"           />
+		<plugin name="wall"      location="plugins/wall/wall.so"           />
+		<plugin name="wolfram"   location="plugins/wolfram/wolfram.so"     />
+		<plugin name="youtube"   location="plugins/youtube/youtube.so"     />
+		<plugin name="zypper"    location="plugins/zypper/zypper.so"       />
+
+		<!-- Server : irc.example.com -->
+		<server hostname="irc.example.com" port="6667">
+	
+			<!-- Global to server plugins (aka PM or non channel msgs) -->
+			<link plugin="ping"     key="PING"/>
+		
+			<link plugin="avatar"   key="AVATAR"   />
+			<link plugin="userinfo" key="USERINFO" />
+			<link plugin="version"  key="VERSION"  />
+
+			<!-- NOTE : Anything added globally is allowed in all channels by default -->
+			<!-- Don't add both places : it WILL run twice -->
+			<link plugin="antispam" key=""         /> <!-- No key : matches all -->
+			<link plugin="log"      key=""         /> <!-- No key : matches all-->
+			<link plugin="title"    key=""         /> <!-- No key : matches all -->
+
+			<link plugin="help"     key="!help"    />
+			<link plugin="uptime"   key="!uptime"  />
+			<link plugin="wall"     key="!wall"    />
+
+			<!-- mask levels : includes admins and banlists (perminant) -->
+			<!-- NOTE : priorty is in the opposite order of the masks : ignore/admin/normal here -->
+
+			<!-- mask format is std IRC format ( 'nick!username@host' ) : *s are allowed -->
+
+			<!-- normal list -->
+			<setlevel mask="*!*@*" level="normal" />
+
+			<!-- Bot admins -->
+			<setlevel mask="*!*@hackerguild.com" level="admin" />
+
+			<!-- ignore list -->
+			<setlevel mask="ECBot!*@*" level="ignore" />
+
+			<!-- Channels -->
+			<channel name="#channel">
+				<link plugin="echo"      key="!echo"     />
+				<link plugin="action"    key="!action"   />
+				<link plugin="google"    key="!google"   />
+				<link plugin="google"    key="!g"        />
+				<link plugin="time"      key="!time"     />
+			</channel>
+		</server>
+	</bot>
+	
+</config>
+
