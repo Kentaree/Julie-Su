@@ -22,7 +22,7 @@ void Pastebin::free (void)
 void Pastebin::run (JulieSu::Irc::Message message)
 {
 	// Respond to their message
-	std::string msg ="[pastebin] http://devhat.pastecode.com/";
+        std::string msg = "[pastebin] http://pastebin.devhat.net"; //[pastebin] http://devhat.pastecode.com/";
 
 	if (message.privmsg_target == bot->getName())
 		bot->getConnection()->sendPrivMsg (message.nick, msg);
