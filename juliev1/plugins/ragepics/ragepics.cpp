@@ -36,9 +36,9 @@ void RagePics::run (JulieSu::Irc::Message message)
 
 	std::string response = std::string("[ragepic] ") + (*it).second;
 	  if (message.privmsg_target == bot->getName()) {
-		bot->getConnection()->sendPrivMsg (message.nick, arguments);
+		bot->getConnection()->sendPrivMsg (message.nick, response);
 	  } else {
-		bot->getConnection()->sendPrivMsg (message.privmsg_target, arguments);
+		bot->getConnection()->sendPrivMsg (message.privmsg_target, response);
 	  }
 }
 
