@@ -189,6 +189,14 @@ namespace JulieSu
 
 	void Bot::linkPlugin (std::string plugin, std::string key)
 	{
+		if (!manager.getPlugin(plugin))
+		{
+			std::stringstream str;
+			str << "[" << name << "] Unable to link plugin " << plugin << " : unable to locate (was it added to the plugins section?)";
+			Output::write (str.str());
+			return;
+		}
+
 		int type = manager.getPlugin(plugin)->getType();
 
 		std::stringstream str;
