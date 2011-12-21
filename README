@@ -1,0 +1,15 @@
+This repository contains an IRC bot used on irc.devhat.net
+
+General building:
+
+mkdir build
+cd build
+cmake ../juliev1/
+make
+
+To run:
+cd build
+bot/juliesu ../config/yourconfig.xml
+
+See juliev1/config/sample.xml for an example. Generally run within screen to keep it constantly running.
+
