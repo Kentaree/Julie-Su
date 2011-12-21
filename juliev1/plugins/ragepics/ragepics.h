@@ -23,6 +23,8 @@ class RagePics : public JulieSu::Plugin
 		void run (JulieSu::Irc::Message message);
  private:
 		std::map<std::string,std::string> responses;
+		void sendOptions(std::string target);
+
 };
 
 extern "C" JulieSu::Plugin* initPlugin (JulieSu::Bot* bot);

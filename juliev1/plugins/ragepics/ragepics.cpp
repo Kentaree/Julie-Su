@@ -4,6 +4,7 @@
 //
 
 #include "ragepics.h"
+#include <sstream>
 
 void RagePics::init (JulieSu::Bot* bot)
 {
@@ -15,7 +16,7 @@ void RagePics::init (JulieSu::Bot* bot)
 	
 	this->bot = bot;
 
-	this->responses["sadok"] = "http://goo.gl/WNEDd";
+	this->responses["ok"] = "http://goo.gl/WNEDd";
 	this->responses["allthe"] = "http://goo.gl/6xCAg";
         this->responses["women"] = "http://goo.gl/uMsmA";
 }
@@ -29,17 +30,30 @@ void RagePics::run (JulieSu::Irc::Message message)
 	std::string arguments = message.privmsg_msg;
 	arguments = arguments.substr(arguments.find(" ")+1);
 	std::string verb = arguments.substr(0,arguments.find(" "));
+	
+	std::string target = (message.privmsg_target == bot->getName()) ? message.nick : message.privmsg_target;
 	std::map<std::string,std::string>::iterator it = this->responses.find(verb);
 	if(it == this->responses.end()) {
+	  sendOptions(target);
 	  return; 
 	}
 
 	std::string response = std::string("[ragepic] ") + (*it).second;
-	  if (message.privmsg_target == bot->getName()) {
-		bot->getConnection()->sendPrivMsg (message.nick, response);
-	  } else {
-		bot->getConnection()->sendPrivMsg (message.privmsg_target, response);
-	  }
+	bot->getConnection()->sendPrivMsg (target, response);
+}
+
+void RagePics::sendOptions(std::string target)
+{
+  std::stringstream options;
+  options << "Possible options:";
+  for(std::map<std::string,std::string>::iterator it = this->responses.begin(); it != this->responses.end(); it++) {
+    options << " " << (*it).first << ",";
+  }
+
+  std::string complete = options.str();
+  complete = complete.erase(complete.length()-1,1);
+  bot->getConnection()->sendPrivMsg (target, complete);
+ 
 }
 
 JulieSu::Plugin* initPlugin (JulieSu::Bot* bot)
