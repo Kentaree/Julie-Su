@@ -264,7 +264,7 @@ else # Default parser : use normal google
 	
 	url = URI.parse('http://www.google.com/search?hl=en&q=' + searchterm + '&btnG=Google+Search')
 	res = Net::HTTP.start(url.host, url.port) {|http|
-		http.get('/search?hl=en&q=' + searchterm + '&btnG=Google+Search')
+		http.get('/search?hl=en&q=' + searchterm + '&btnG=Google+Search', {"User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.63 Safari/535.7" })
 	}
 	
 	#puts url
@@ -323,8 +323,21 @@ else # Default parser : use normal google
 			end
 
 			puts "[calc] " + equation + " "
+			exit
 		end
 	
+		#
+		# Currency
+		#
+		if curline.index('class="currency g"') != nil then
+			curline = curline [curline.index('class="currency g"') .. curline.length()]
+		#	curline = curline[curline.index("<b>") + 3 .. curline.length()]
+		#	curline = curline[0 .. curline.index("</b>")]
+
+			puts "[currency] " + curline
+			exit
+		end
+
 		#
 		# Weather search
 		#
@@ -348,10 +361,10 @@ else # Default parser : use normal google
 				temperature = c[0 .. c.index(' ')]
 
 				c = c[c.index('Wind:') .. c.length()]		
-				wind = c[0 .. c.index('</td>') - 1]
+				wind = c[0 .. c.index('<td>') - 1]
 
 				c = c[c.index('Humidity: ') + 'Humidity: '.length() .. c.length()]
-				humidity = 'Humidity: ' + c[0 .. c.index('</td') - 1]
+				humidity = 'Humidity: ' + c[0 .. c.index('<td') - 1]
 
 				type = 'Unknown'
 
