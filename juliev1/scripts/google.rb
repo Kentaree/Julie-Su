@@ -420,9 +420,9 @@ else # Default parser : use normal google
 				
 				# Search for : Definitions of
 				curline = curline[curline.index('<div class=s>') .. curline.length()]
-				curline = curline[curline.index('<div>') + 5 .. curline.length()]
+				curline = curline[curline.index('<td>') + 4 .. curline.length()]
 	
-				definition = curline[0 .. curline.index('</div>') - 1]
+				definition = curline[0 .. curline.index('</td>') - 1]
 	
 				definition = removeLinks(definition);
 
