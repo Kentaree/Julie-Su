@@ -19,6 +19,14 @@ void RagePics::init (JulieSu::Bot* bot)
 	this->responses["ok"] = "http://goo.gl/WNEDd";
 	this->responses["allthe"] = "http://goo.gl/6xCAg";
         this->responses["women"] = "http://goo.gl/uMsmA";
+        this->responses["foreveralone"] = "http://goo.gl/a4H7H";
+        this->responses["megusta"] = "http://goo.gl/dwK2V";
+        this->responses["problem"] = "http://goo.gl/xBAjL";
+        this->responses["fu"] = "http://goo.gl/UgsVQ";
+        this->responses["yuno"] = "http://goo.gl/BlkkO";
+        this->responses["fuckyeah"] = "http://goo.gl/u3sFF";
+        this->responses["fuckthat"] = "http://goo.gl/GA4E5";
+        this->responses["arrow"] = "http://goo.gl/YFc7E";
 }
 
 void RagePics::free (void)
