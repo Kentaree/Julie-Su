@@ -3,7 +3,7 @@
 
 <config>
 	<!-- Julie-Su -->
-	<bot name="Julie-Su" password="">
+	<bot name="Doolie-su" password="">
 	
 		<!-- Plugins to load -->
 		<plugin name="ping"      location="plugins/ping/ping.so"           />
@@ -35,6 +35,7 @@
 		<plugin name="pizza"     location="plugins/pizza/pizza.so"         />
 		<plugin name="portage"   location="plugins/portage/portage.so"     />
 		<plugin name="quote"     location="plugins/quote/quote.so"         />
+		<plugin name="ragepics"  location="plugins/ragepics/ragepics.so"   />
 		<plugin name="raw"       location="plugins/raw/raw.so"             />
 		<plugin name="reload"    location="plugins/reload/reload.so"       />
 		<plugin name="roulette"  location="plugins/roulette/roulette.so"   />
@@ -51,7 +52,7 @@
 		<plugin name="zypper"    location="plugins/zypper/zypper.so"       />
 
 		<!-- Server : irc.example.com -->
-		<server hostname="irc.example.com" port="6667">
+		<server hostname="irc.devhat.net" port="6667">
 	
 			<!-- Global to server plugins (aka PM or non channel msgs) -->
 			<link plugin="ping"     key="PING"/>
@@ -85,12 +86,13 @@
 			<setlevel mask="ECBot!*@*" level="ignore" />
 
 			<!-- Channels -->
-			<channel name="#channel">
+			<channel name="#minecraft">
 				<link plugin="echo"      key="!echo"     />
 				<link plugin="action"    key="!action"   />
 				<link plugin="google"    key="!google"   />
 				<link plugin="google"    key="!g"        />
 				<link plugin="time"      key="!time"     />
+				<link plugin="ragepics"  key="!meme" />
 			</channel>
 		</server>
 	</bot>
