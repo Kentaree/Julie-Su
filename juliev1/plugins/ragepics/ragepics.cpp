@@ -27,6 +27,7 @@ void RagePics::init (JulieSu::Bot* bot)
         this->responses["fuckyeah"] = "http://goo.gl/u3sFF";
         this->responses["fuckthat"] = "http://goo.gl/GA4E5";
         this->responses["arrow"] = "http://goo.gl/YFc7E";
+	this->responses["vee"] = "http://tinyurl.com/87vop85";
 }
 
 void RagePics::free (void)
