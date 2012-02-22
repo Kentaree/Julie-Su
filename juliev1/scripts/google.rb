@@ -292,8 +292,9 @@ else # Default parser : use normal google
 			curline = curline [curline.index('/images/icons/onebox/calculator-40.gif') + 22 .. curline.length()]
 			curline = curline [curline.index('<h2') + 3 .. curline.length()]
 			curline = curline [curline.index('>') + 1 .. curline.length()]
-			equation = curline [0 .. curline.index('</') - 1]
+			equation = curline [0 .. curline.index('</h2') - 1]
 	
+
 			# Replace spaces (<font size=-2> </font>) in answer
 			while equation.index('<font size=-2>') != nil
 				equation [equation.index('<font size=-2>'), '<font size=-2> </font>'.length()] = ''
