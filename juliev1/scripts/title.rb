@@ -66,6 +66,7 @@ def replaceHtmlSymbols (str)
 
 	str = str.gsub('&amp;', '&')
 	str = str.gsub('&#39;', '\'')
+	str = str.gsub('&#039;', '\'')
 	str = str.gsub('&#8211;', '-')
 	str = str.gsub('&ndash;', '-')
 	str = str.gsub('&#8217;', '\'')
@@ -75,6 +76,7 @@ def replaceHtmlSymbols (str)
 	str = str.gsub('&hellip;', '...')
 	str = str.gsub('&rsquo;', '\'')
 
+	str = str.gsub('&laquo;', '<<')
 	str = str.gsub('&raquo;', '>>')
 	str = str.gsub('&quot;', '\'')
 
