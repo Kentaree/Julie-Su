@@ -1,79 +1,95 @@
 //
 /// \file plugins/ragepics/ragepics.cpp
-/// \brief RagePics plugin
+/// \brief Ragepics plugin
 //
 
 #include "ragepics.h"
-#include <sstream>
 
-void RagePics::init (JulieSu::Bot* bot)
+#include <cstdlib>
+#include <fstream>
+#include <string>
+#include <iostream>
+
+#define MEME_SCRIPT "../scripts/meme.rb"
+#define MEME_CACHE "memes.cache"
+
+#define MAX_MSG_LEN 500
+
+void Ragepics::init (JulieSu::Bot* bot)
 {
-	this->author = "kentaree";
-	this->name = "RagePics";
-	this->description = "ragepics ragepics ragepics";
+	this->author = "thothonegan + kentaree";
+	this->name = "Ragepics";
+	this->description = "Displays ragepic urls";
 
 	this->type = JulieSu::PLUGIN_PRIVMSG;
 	
 	this->bot = bot;
 
-	this->responses["ok"] = "http://goo.gl/WNEDd";
-	this->responses["allthe"] = "http://goo.gl/6xCAg";
-        this->responses["women"] = "http://goo.gl/uMsmA";
-        this->responses["foreveralone"] = "http://goo.gl/a4H7H";
-        this->responses["megusta"] = "http://goo.gl/dwK2V";
-        this->responses["problem"] = "http://goo.gl/xBAjL";
-        this->responses["fu"] = "http://goo.gl/UgsVQ";
-        this->responses["yuno"] = "http://goo.gl/BlkkO";
-        this->responses["fuckyeah"] = "http://goo.gl/u3sFF";
-        this->responses["fuckthat"] = "http://goo.gl/GA4E5";
-        this->responses["arrow"] = "http://goo.gl/YFc7E";
-	this->responses["vee"] = "http://tinyurl.com/87vop85";
+	std::string cmd = MEME_SCRIPT;
+	cmd += " " MEME_CACHE " Julie-Su refresh";
+	system (cmd.c_str());
 }
 
-void RagePics::free (void)
+void Ragepics::free (void)
 {}
 
-void RagePics::run (JulieSu::Irc::Message message)
+void Ragepics::run (JulieSu::Irc::Message message)
 {
 	// Respond to their message
 	std::string arguments = message.privmsg_msg;
 	arguments = arguments.substr(arguments.find(" ")+1);
-	std::string verb = arguments.substr(0,arguments.find(" "));
-	
-	std::string target = (message.privmsg_target == bot->getName()) ? message.nick : message.privmsg_target;
-	std::map<std::string,std::string>::iterator it = this->responses.find(verb);
-	if(it == this->responses.end()) {
-	  sendOptions(target);
-	  return; 
+
+	// Prepare quotes
+	for (int x=0; x < arguments.size(); ++x)
+	{
+		if (arguments[x] == '\"')
+		{
+			arguments.insert (arguments.begin()+x, '\\');
+			x++;
+		}
 	}
 
-	std::string response = std::string("[ragepic] ") + (*it).second;
-	bot->getConnection()->sendPrivMsg (target, response);
+	// Run script
+	std::string command = MEME_SCRIPT;
+	command += " " MEME_CACHE " " + arguments;
+	command += " >output.txt";
+	std::cout << "RUNNING : " << command << std::endl;
+	system (command.c_str());
+
+	// Now read the first line
+	std::ifstream file ("output.txt");
+	std::string line;
+	getline (file, line);
+
+	std::string msg = "[ragepics] ";
+	msg += line;
+
+	if (msg.size() > MAX_MSG_LEN)
+	{
+		msg = msg.substr(0, MAX_MSG_LEN);
+
+		msg += "[...]";
+	}
+
+	if (message.privmsg_target == bot->getName())
+		bot->getConnection()->sendPrivMsg (message.nick, msg);
+	else
+		bot->getConnection()->sendPrivMsg (message.privmsg_target, msg);
 }
 
-void RagePics::sendOptions(std::string target)
-{
-  std::stringstream options;
-  options << "Possible options:";
-  for(std::map<std::string,std::string>::iterator it = this->responses.begin(); it != this->responses.end(); it++) {
-    options << " " << (*it).first << ",";
-  }
-
-  std::string complete = options.str();
-  complete = complete.erase(complete.length()-1,1);
-  bot->getConnection()->sendPrivMsg (target, complete);
-}
 
 JulieSu::Plugin* initPlugin (JulieSu::Bot* bot)
 {
-	JulieSu::Plugin* temp = new RagePics;
+	JulieSu::Plugin* temp = new Ragepics;
 	temp->init (bot);
+
 	return temp;
 }
 
 void freePlugin (JulieSu::Plugin* plugin)
 {
 	plugin->free();
+
 	delete plugin;
 }
 
